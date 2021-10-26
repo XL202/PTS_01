@@ -11,16 +11,16 @@ public class GameCardType {
     String name;
     String description;
     
-    public GameCardType(int pa, int pb, int pca, int pco, int p, int c, boolean isA, String n, String d) {
-        plusActions = pa;
-        plusBuys = pb;
-        plusCards = pca;
-        plusCoins = pco;
-        points = p;
-        cost = c;
-        isAction = isA;
-        name = n;
-        description = d;
+    public GameCardType(int plusActions, int plusBuys, int plusCards, int plusCoins, int points, int cost, boolean isAction, String name, String description) {
+        this.plusActions = plusActions;
+        this.plusBuys = plusBuys;
+        this.plusCards = plusCards;
+        this.plusCoins = plusCoins;
+        this.points = points;
+        this.cost = cost;
+        this.isAction = isAction;
+        this.name = name;
+        this.description = description;
     }
     
     public int getPlusActions() {return plusActions;}

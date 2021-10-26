@@ -7,17 +7,17 @@ import static org.junit.Assert.assertTrue;
 
 
 class FakeCard implements CardInterface {
-    private GameCardType _cardType;
+    private GameCardType cardType;
     
-    FakeCard(GameCardType __cardType) {
-        _cardType = __cardType;
+    FakeCard(GameCardType cardType) {
+        this.cardType = cardType;
     }
     
     public void evaluate(TurnStatus t) {
     }
 
     public GameCardType cardType() {
-    	return _cardType;
+    	return cardType;
     }
 }
 

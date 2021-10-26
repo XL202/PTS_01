@@ -8,8 +8,8 @@ import java.util.Collections;
 public class DiscardPile {
     List<CardInterface> cards;
 
-    public DiscardPile(List<CardInterface> _cards) {
-        cards = _cards;
+    public DiscardPile(List<CardInterface> cards) {
+        this.cards = cards;
     }
         
     public Optional<CardInterface> getTopCard() {

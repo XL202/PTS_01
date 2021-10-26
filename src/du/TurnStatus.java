@@ -4,6 +4,11 @@ public class TurnStatus {
     public int actions;
     public int buys;
     public int coins;
+    public TurnStatus() {
+        this.actions = 1;
+        this.buys = 1;
+        this.coins = 0;
+    }
     @Override
     public int hashCode() {
         final int prime = 31;
