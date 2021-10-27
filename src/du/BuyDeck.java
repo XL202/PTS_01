@@ -1,17 +1,19 @@
 package du;
 
 import java.util.LinkedList;
-import java.util.Optional;
 
 public class BuyDeck {
-    public BuyDeck(LinkedList<CardInterface> bd) {
-
+    LinkedList<CardInterface> cards;
+    public BuyDeck(GameCardType gc, int count) {
+        cards = new LinkedList();
+        for(int i=0; i<count; i++) {
+            cards.add(new GameCard(gc));
+        }
     }
-    int cardCount() {
-        return 0;
+    public int cardCount() {
+        return cards.size();
     }
-    public Optional<CardInterface> buy() {
-        Optional<CardInterface> a = Optional.empty();
-        return a;
+    public CardInterface buy() {
+        return cards.removeLast();
     }
 }

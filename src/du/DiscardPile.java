@@ -17,8 +17,8 @@ public class DiscardPile {
         return Optional.of(cards.get(cards.size()-1));
     }
         
-    public void addCards(List<CardInterface> _cards) {
-        cards.addAll(_cards);
+    public void addCards(List<CardInterface> cards) {
+        this.cards.addAll(cards);
     }
         
     public int getSize() {
