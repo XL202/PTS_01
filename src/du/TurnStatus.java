@@ -1,14 +1,40 @@
 package du;
 
 public class TurnStatus {
-    public int actions;
-    public int buys;
-    public int coins;
+    private int actions;
+    private int buys;
+    private int coins;
+
     public TurnStatus() {
         this.actions = 1;
         this.buys = 1;
         this.coins = 0;
     }
+
+    public int getBuys() {
+        return buys;
+    }
+
+    public void setBuys(int buys) {
+        this.buys = buys;
+    }
+
+    public int getActions() {
+        return actions;
+    }
+
+    public void setActions(int actions) {
+        this.actions = actions;
+    }
+
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
+    public int getCoins() {
+        return coins;
+    }
+
     @Override
     public int hashCode() {
         final int prime = 31;
