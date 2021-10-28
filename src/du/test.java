@@ -9,12 +9,14 @@ public class test {
 
 
         game.endPlayCardPhase();
+        game.buyCards(2);
+        /*game.endPlayCardPhase();
         game.endPlayCardPhase();
-        game.endPlayCardPhase();
+        /*game.endPlayCardPhase();
         game.endPlayCardPhase();
         game.endPlayCardPhase();
         game.endTurn();
-        game.endTurn();
+        game.endTurn();*/
 
         //System.out.println(game.t.getTurnNumber());
         //System.out.println(game.hand_to_string());

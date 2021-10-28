@@ -6,8 +6,9 @@ import java.util.LinkedList;
 
 public class Deck {
     LinkedList<CardInterface> deck;
-    public Deck(LinkedList<CardInterface> deck) {
-
+    DiscardPile dp;
+    public Deck(LinkedList<CardInterface> deck, DiscardPile dp) {
+        this.dp = dp;
         if (deck == null) {
             this.deck = new LinkedList<>();
             for(int i=0; i<3; i++) this.deck.add(new GameCard(GameCardType.GAME_CARD_TYPE_ESTATE));
@@ -22,11 +23,17 @@ public class Deck {
 
     }
     public LinkedList<CardInterface> draw(int count) {
-        LinkedList tmp = new LinkedList();
+        int rest_count = 0;
         if (deck.size() < count) {
-            count = deck.size();
+            rest_count = count - deck.size();
         }
-        for(int i=0; i<count; i++) tmp.add(deck.removeFirst());
+        LinkedList tmp = new LinkedList();
+        for(int i=0; i<count - rest_count; i++) tmp.add(deck.removeFirst());
+        if (rest_count > 0) {
+            //System.out.println("ERR");
+            deck = new LinkedList(dp.shuffle());
+            for(int i=0; i<rest_count; i++) tmp.add(deck.removeFirst());
+        }
         return tmp;
     }
 }

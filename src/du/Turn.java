@@ -9,24 +9,20 @@ public class Turn {
     Deck deck;
     DiscardPile discardPile;
     Play play;
-    public Turn(Hand h, Deck d, DiscardPile dp, Play p) {
+    public Turn(Hand h, Deck d, DiscardPile dp, Play p, TurnStatus ts) {
         hand = h;
         deck = d;
         play = p;
         discardPile = dp;
-        this.ts = new TurnStatus();
+        this.ts = ts;
         turnNumber = 1;
     }
     public boolean evaluate_card(CardInterface card) {
         int drawCount = card.evaluate(ts);
-        int tmp;
-        LinkedList<CardInterface> tmp_cards = new LinkedList<>(deck.draw(drawCount));
-        if (tmp_cards.size() < drawCount) {
-            tmp = drawCount - tmp_cards.size();
-            deck = new Deck(discardPile.shuffle());
-            tmp_cards.addAll(deck.draw(tmp));
-        }
-        hand.drawCards(tmp_cards);
+        //System.out.printf("%d in\n", ts.getCoins());
+        LinkedList<CardInterface> tmp_cards = new LinkedList<>();
+
+        hand.drawCards(deck.draw(drawCount));
         return false;
 
     }

@@ -28,6 +28,9 @@ public class DiscardPile {
         cards = new LinkedList<CardInterface>();
         return cards_to_send;
     }
+    public LinkedList<CardInterface> get_dp() {
+        return cards;
+    }
 }
         
         
