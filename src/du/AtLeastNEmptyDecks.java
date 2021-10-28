@@ -16,7 +16,7 @@ public class AtLeastNEmptyDecks implements EndGameStrategy {
         for(int i=0; i<bd.size(); i++) {
             if (bd.get(i).cardCount() == 0) tmp++;
         }
-        if (tmp >= a) return true;
+        if (tmp < a) return true;
         return false;
     }
 }

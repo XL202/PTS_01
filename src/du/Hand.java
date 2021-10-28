@@ -24,8 +24,9 @@ public class Hand {
         cards.addAll(c);
     }
     public LinkedList<CardInterface> throwCards() {
-        LinkedList<CardInterface> tmp = new LinkedList<>();
-        for(int i=0; i<cards.size(); i++) tmp.add(cards.removeLast());
+        LinkedList<CardInterface> tmp = new LinkedList<>(cards);
+        cards = new LinkedList<>();
+        //for(int i=0; i<cards.size(); i++) tmp.add(cards.remove(0));
         return tmp;
     }
 }

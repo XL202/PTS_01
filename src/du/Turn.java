@@ -15,7 +15,7 @@ public class Turn {
         play = p;
         discardPile = dp;
         this.ts = new TurnStatus();
-        turnNumber = 0;
+        turnNumber = 1;
     }
     public boolean evaluate_card(CardInterface card) {
         int drawCount = card.evaluate(ts);
@@ -33,7 +33,7 @@ public class Turn {
     public boolean nextTurn(int c, LinkedList<BuyDeck> bd) {
         AtLeastNEmptyDecks a = new AtLeastNEmptyDecks(c, bd);
         if (a.isGameOver()) return false;
-
+        turnNumber++;
         return true;
     }
 

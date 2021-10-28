@@ -28,6 +28,7 @@ public class Game {
         d = new Deck(null);
         h = new Hand(d);
         p = new Play();
+        dp = new DiscardPile(new LinkedList<>());
         t = new Turn(h, d, dp, p);
         ts = new TurnStatus();
         bd = new LinkedList<>();
@@ -51,7 +52,7 @@ public class Game {
         System.out.printf("Game starts. {Buy deck: %s}\n", buyDecks());
         System.out.printf("Deck: {%s}\n", deck_to_string());
         System.out.printf("Hand: A: %d, B: %d, C: %d, {%s}\n", ts.getActions(), ts.getBuys(), ts.getCoins(), hand_to_string());
-        System.out.println("Turn 1, action phase.");
+        System.out.println("Turn 1, action phase.\n-----------");
         actionPhase = true;
         buyPhase = false;
 
@@ -68,13 +69,15 @@ public class Game {
 
         return true;
     }
-    private boolean endPlayCardPhase() {
+    public boolean endPlayCardPhase() {
+        if (actionPhase) System.out.printf("Turn %s, buy phase\n------------\n", t.getTurnNumber());
         actionPhase = !actionPhase;
+
         buyPhase = !buyPhase;
         if (buyPhase) endTurn();
         return false;
     }
-    public boolean buyCard(int buyCardIdx) {
+    /*public boolean buyCard(int buyCardIdx) {
         if (bd.get(buyCardIdx).cardCount() > 0) {
             LinkedList<CardInterface> a = new LinkedList();
             a.add(bd.get(buyCardIdx).buy());
@@ -82,21 +85,24 @@ public class Game {
             return true;
         }
         return false;
-    }
+    }*/
 
     public boolean endTurn() {
-        if (t.nextTurn(empty_Buy_Decks_to_end_game, bd)) {
-            System.out.printf("{Buy deck: %s}\n", buyDecks());
-            System.out.printf("Deck: {%s}\n", deck_to_string());
-            System.out.printf("Hand: A: %d, B: %d, C: %d, {%s}\n", ts.getActions(), ts.getBuys(), ts.getCoins(), hand_to_string());
-            System.out.printf("Turn %d, action phase.", t.turnNumber);
+        if (!t.nextTurn(empty_Buy_Decks_to_end_game, bd)) {
 
-            System.out.println("Koniec hry");
+
+            System.out.println("***** Game over *****");
         }
         else {
-            t.turnNumber++;
+            //(t.turnNumber)++;
             dp.addCards(h.throwCards());
             dp.addCards(p.throwAll());
+            h.drawCards(d.draw(5));
+            System.out.printf("Next turn: Turn %d, action phase.\n", t.getTurnNumber());
+            System.out.printf("{Buy deck: %s}\n", buyDecks());
+            System.out.printf("Deck: {%s}\n", deck_to_string());
+
+            System.out.printf("Hand: A: %d, B: %d, C: %d, {%s}\n------------\n", ts.getActions(), ts.getBuys(), ts.getCoins(), hand_to_string());
 
         }
         return false;
