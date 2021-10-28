@@ -1,6 +1,8 @@
 package du;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -13,7 +15,8 @@ class FakeCard implements CardInterface {
         this.cardType = cardType;
     }
     
-    public void evaluate(TurnStatus t) {
+    public int evaluate(TurnStatus t) {
+        return 0;
     }
 
     public GameCardType cardType() {
@@ -36,11 +39,11 @@ public class DiscardPileTest  {
     }
 
     void setUp() {
-        pile1 = new DiscardPile(new ArrayList<CardInterface>() {{
+        pile1 = new DiscardPile(new LinkedList<CardInterface>() {{
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_ESTATE));
             add(new FakeCard(GameCardType.GAME_CARD_TYPE_COPPER));
         }});
-        pile2 = new DiscardPile(new ArrayList<CardInterface>());
+        pile2 = new DiscardPile(new LinkedList<CardInterface>());
     }
     
     @Test

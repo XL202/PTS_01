@@ -1,14 +1,11 @@
 package du;
 
-import java.util.Optional; 
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 
 public class DiscardPile {
-    List<CardInterface> cards;
+    LinkedList<CardInterface> cards;
 
-    public DiscardPile(List<CardInterface> cards) {
+    public DiscardPile(LinkedList<CardInterface> cards) {
         this.cards = cards;
     }
         
@@ -25,10 +22,10 @@ public class DiscardPile {
         return cards.size();
     }
         
-    public List<CardInterface> shuffle() {
+    public LinkedList<CardInterface> shuffle() {
         Collections.shuffle(cards);
-        List<CardInterface> cards_to_send = cards;        
-        cards = new ArrayList<CardInterface>();
+        LinkedList<CardInterface> cards_to_send = cards;
+        cards = new LinkedList<CardInterface>();
         return cards_to_send;
     }
 }

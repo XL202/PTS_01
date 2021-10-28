@@ -1,7 +1,7 @@
 package du;
 
 interface CardInterface {
-    void evaluate(TurnStatus ts);
+    int evaluate(TurnStatus ts);
     GameCardType cardType();
 }
 

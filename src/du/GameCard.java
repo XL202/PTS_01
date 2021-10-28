@@ -6,10 +6,11 @@ public class GameCard implements CardInterface {
         this.g = g;
     }
     @Override
-    public void evaluate(TurnStatus ts) {
+    public int evaluate(TurnStatus ts) {
         ts.setCoins(ts.getCoins() + this.g.plusCoins);
         ts.setActions(ts.getActions() + this.g.plusActions);
         ts.setBuys(ts.getBuys() + this.g.plusBuys);
+        return g.plusCards;
     }
 
     @Override

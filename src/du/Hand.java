@@ -3,7 +3,7 @@ package du;
 import java.util.*;
 
 public class Hand {
-    List<CardInterface> cards;
+    LinkedList<CardInterface> cards;
     public Hand(Deck c){
         this.cards = new LinkedList<>();
         LinkedList<CardInterface> a = c.draw(5);
@@ -13,8 +13,19 @@ public class Hand {
         return cards.get(idx).cardType().isAction;
     }
 
-    public Optional<CardInterface> play(int idx) {
-        Optional<CardInterface> a = Optional.of(cards.get(idx));
-        return a;
+    public CardInterface play(int idx) {
+        if (cards.size()> idx) return cards.get(idx);
+        else return null;
+    }
+    public LinkedList<CardInterface> getHand() {
+        return cards;
+    }
+    public void drawCards(LinkedList<CardInterface> c) {
+        cards.addAll(c);
+    }
+    public LinkedList<CardInterface> throwCards() {
+        LinkedList<CardInterface> tmp = new LinkedList<>();
+        for(int i=0; i<cards.size(); i++) tmp.add(cards.removeLast());
+        return tmp;
     }
 }

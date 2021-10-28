@@ -3,7 +3,7 @@ package du;
 import java.util.LinkedList;
 
 public class Play {
-    LinkedList a = new LinkedList();
+    LinkedList<CardInterface> a = new LinkedList();
     public Play(){
 
     }
@@ -11,6 +11,8 @@ public class Play {
         a.add(c);
     }
     public LinkedList<CardInterface> throwAll() {
-        return a;
+        LinkedList<CardInterface> tmp = new LinkedList<>();
+        for(int i=0; i<a.size(); i++) tmp.add(a.removeLast());
+        return tmp;
     }
 }
