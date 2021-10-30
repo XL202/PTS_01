@@ -30,6 +30,7 @@ public class Turn {
         AtLeastNEmptyDecks a = new AtLeastNEmptyDecks(c, bd);
         if (a.isGameOver()) return false;
         turnNumber++;
+
         return true;
     }
 

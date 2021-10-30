@@ -12,7 +12,11 @@ public class Play {
     }
     public LinkedList<CardInterface> throwAll() {
         LinkedList<CardInterface> tmp = new LinkedList<>();
-        for(int i=0; i<a.size(); i++) tmp.add(a.removeLast());
+        int size = a.size();
+        for(int i=0; i<size; i++) tmp.add(a.remove(0));
         return tmp;
+    }
+    public LinkedList<CardInterface> playPile() {
+        return a;
     }
 }

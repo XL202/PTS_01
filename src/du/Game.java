@@ -13,6 +13,7 @@ public class Game {
     LinkedList<BuyDeck> bd;
     LinkedList<GameCardType> gct;
     int empty_Buy_Decks_to_end_game;
+    boolean ok = true;
 
     public Game(int m, int e, int c, int s, int v, int f, int l, int empty_Buy_Decks_to_end_game) {
         if (m<5) m = 5;
@@ -51,85 +52,141 @@ public class Game {
         bd.add(new BuyDeck(gct.get(5), f));
         bd.add(new BuyDeck(gct.get(6), l));
 
-        System.out.printf("Game starts. {Buy deck: %s}\n", buyDecks());
-        System.out.printf("Deck: {%s}\n", deck_to_string());
-        System.out.printf("DiscardPile: {%s}\n", dp_to_string());
-        System.out.printf("Hand: A: %d, B: %d, C: %d, {%s}\n", ts.getActions(), ts.getBuys(), ts.getCoins(), hand_to_string());
+        System.out.println("Game starts.");
         System.out.println("Turn 1, action phase.\n-----------");
-        actionPhase = true;
+
         buyPhase = false;
+        actionPhase = true;
+        is_Action_phase_possible();
 
     }
     public boolean playCard(int handIdx) {
+        if (!actionPhase) {
+            System.err.println("Nie je možné hrať kartu pokiaľ nie je ActionPhase!");
+            return false;
+        }
         if (ts.getActions() > 0) {
-            if (h.cards.size() > handIdx) t.evaluate_card(h.play(handIdx));
+            if (h.cards.size() > handIdx && handIdx > -1) {
+                if (h.getHand().get(handIdx).cardType().isAction) t.evaluate_card(h.play(handIdx));
+                else {
+                    System.err.println("Zvolená karta nie je ActionCard!");
+                    return false;
+                }
+            }
             else {
-                System.out.println("Zvolená karta nie je v ruke!");
+                System.err.println("Zvolená karta nie je v ruke!");
                 return false;
             }
             p.addCardToPlay(h.cards.remove(handIdx));
             ts.setActions(ts.getActions() - 1);
+            if (ts.getActions() == 0) {
+                System.out.println("Počet Actions je 0");
+                endPlayCardPhase();
+            }
             //System.out.println(ts.getCoins());
         }
-        else System.out.println("Nedostatok akcii!");
+        else System.err.println("Nedostatok akcii!");
 
         //if (h.play(handIdx).cardType().isAction) ;
 
         //System.out.println(ts.getCoins());
         return true;
     }
+
     public boolean endPlayCardPhase() {
-        if (actionPhase) System.out.printf("Turn %s, buy phase\n------------\n", t.getTurnNumber());
-        actionPhase = !actionPhase;
+        if (buyPhase) {
+            buyPhase = false;
+            actionPhase = true;
+            endTurn();
+        }
+        else if (actionPhase) {
+            System.out.printf("============\nTurn %s, buy phase\n------------\n", t.getTurnNumber());
+            actionPhase = false;
+            buyPhase = true;
+            int tmp = h.getHand().size();
+            int tmp_c = 0;
+            for(int i=0; i<tmp; i++) {
 
+                if (h.getHand().get(i).cardType() == GameCardType.GAME_CARD_TYPE_COPPER) {
+                    ts.setCoins(ts.getCoins() + 1);
+                    p.addCardToPlay(h.getHand().remove(i));
+                    i--;
+                    tmp--;
+                    tmp_c++;
+                }
+            }
+            if (tmp_c != 0) System.out.printf("%d kariet COPPER bolo premenených na coins (+%d Coins)\n", tmp_c, tmp_c);
+        }
 
-        if (buyPhase) endTurn();
-        buyPhase = !buyPhase;
         return false;
     }
-    /*public boolean buyCard(int buyCardIdx) {
-        if (bd.get(buyCardIdx).cardCount() > 0) {
-            LinkedList<CardInterface> a = new LinkedList();
-            a.add(bd.get(buyCardIdx).buy());
-            dp.addCards(new LinkedList(a));
-            return true;
-        }
-        return false;
-    }*/
 
     public boolean endTurn() {
+        dp.addCards(h.throwCards());
+        dp.addCards(p.throwAll());
         if (!t.nextTurn(empty_Buy_Decks_to_end_game, bd)) {
-
-
-            System.out.println("***** Game over *****");
+            int points = 0;
+            int cards = 0;
+            for(int i=0; i<dp.getSize(); i++) {
+                points += dp.cards.get(i).cardType().points;
+                cards++;
+            }
+            for(int i=0; i<d.deck.size(); i++) {
+                points += d.deck.get(i).cardType().points;
+                cards++;
+            }
+            System.out.println("======================\n***** Game over *****");
+            System.out.printf("Počet kariet: %d\n", cards);
+            System.out.printf("Počet bodov v decku: %d\n", points);
+            printBuyDeck();
+            printDeck();
+            printDiscardPile();
+            printHand();
+            printPlay();
+            ok = false;
+            return false;
         }
         else {
             //(t.turnNumber)++;
-            dp.addCards(h.throwCards());
-            dp.addCards(p.throwAll());
-            h.drawCards(d.draw(5));
-            System.out.printf("Next turn: Turn %d, action phase.\n", t.getTurnNumber());
-            System.out.printf("{Buy deck: %s}\n", buyDecks());
-            System.out.printf("Deck: {%s}\n", deck_to_string());
-            System.out.printf("DiscardPile: {%s}\n", dp_to_string());
-            System.out.printf("Hand: A: %d, B: %d, C: %d, {%s}\n------------\n", ts.getActions(), ts.getBuys(), ts.getCoins(), hand_to_string());
 
+            ts = new TurnStatus();
+
+            h.drawCards(d.draw(5));
+            System.out.printf("============\nNext turn: Turn %d, action phase.\n", t.getTurnNumber());
+            //actionPhase = true;
+            is_Action_phase_possible();
         }
         return false;
 
     }
+    private void is_Action_phase_possible() {
+        boolean tmp = true;
+        for(int i=0; i<h.getHand().size(); i++) {
+            if (h.getHand().get(i).cardType().isAction) return;
+            else tmp = false;
+        }
+        if (!tmp) {
+            System.out.println("***V Hand nie sú žiadne action cards!***");
+
+            endPlayCardPhase();
+        }
+
+    }
     public boolean buyCards(int idBuyDeck) {
-        if (idBuyDeck > 7) {
-            System.out.println("Takýto buy deck neexistuje.");
+        if (!buyPhase) {
+            System.err.println("Nie je možné hrať kartu pokiaľ nie je BuyPhase!");
+            return false;
+        }
+        if (idBuyDeck > 7 && idBuyDeck < 0) {
+            System.err.println("Takýto buy deck neexistuje.");
             return false;
         }
         if (ts.getBuys() < 1) {
-            System.out.printf("Nie je dostatočný počet Buys pre nákup karty \n");
+            System.err.printf("Nie je dostatočný počet Buys pre nákup karty.\n");
             return false;
         }
-
         if (gct.get(idBuyDeck).cost > ts.getCoins()) {
-            System.out.printf("Nie je dostatočný počet mincí pre nákup karty %s, pretože je potrebných %d a máte len %d. \n", gct.get(idBuyDeck).name, gct.get(idBuyDeck).cost, ts.getCoins());
+            System.err.printf("Nie je dostatočný počet mincí pre nákup karty %s, pretože je potrebných %d a máte len %d. \n", gct.get(idBuyDeck).name, gct.get(idBuyDeck).cost, ts.getCoins());
             return false;
         }
         if (bd.get(idBuyDeck).cardCount() > 0) {
@@ -139,44 +196,67 @@ public class Game {
             ts.setCoins(ts.getCoins() - gct.get(idBuyDeck).cost);
             System.out.printf("Karta %s bola úspešne kúpená za %d coins. Zostatok coins: %d.\n", gct.get(idBuyDeck).name, gct.get(idBuyDeck).cost, ts.getCoins());
             ts.setBuys(ts.getBuys() -1);
+            if (ts.getBuys() == 0) {
+                System.out.println("Počet Buys je 0.");
+                endPlayCardPhase();
+            }
             return true;
         }
         else {
-            System.out.println("Nie je možné kúpiť kartu, lebo už nie je v BuyDecku");
+            System.err.println("Nie je možné kúpiť kartu, lebo už nie je v BuyDecku");
         }
         return false;
     }
-    private String buyDecks() {
+    public void printBuyDeck() {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<bd.size(); i++) {
             sb.append(gct.get(i).name + ": ");
-            sb.append(bd.get(i).cardCount() + " ");
+            sb.append(bd.get(i).cardCount() + ", ");
         }
-        return sb.toString();
+        System.out.printf("BuyDeck: [%s].\n", sb);
     }
-    public String deck_to_string() {
+
+    public void printBuyDeckDescription() {
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<bd.size(); i++) {
+            sb.append(gct.get(i).name + ": [");
+            sb.append(bd.get(i).cardCount() + ", " + gct.get(i).cost + " {");
+            sb.append(gct.get(i).description + "}]\n");
+        }
+        System.out.printf("*** BuyDeck ***\nCard_type: [count in BD, Cost, {Description}]\n%s", sb);
+    }
+    public void printPlay() {
+        StringBuilder sb = new StringBuilder();
+
+        for(int i=0; i<p.playPile().size(); i++) {
+            sb.append(p.playPile().get(i).cardType().name + " ");
+        }
+        System.out.printf("PlayPile: [%s].\n", sb);
+    }
+    public void printDeck() {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<d.deck.size(); i++) {
             sb.append(d.deck.get(i).cardType().name + " ");
         }
-        return sb.toString();
+        System.out.printf("Deck: [%s].\n", sb);
     }
-    public String dp_to_string() {
+    public void printDiscardPile() {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<dp.get_dp().size(); i++) {
             sb.append(dp.get_dp().get(i).cardType().name + " ");
         }
-        return sb.toString();
+        System.out.printf("Discard Pile: [%s].\n", sb);
     }
-    public String hand_to_string() {
+    public void printHand() {
         StringBuilder sb = new StringBuilder();
 
         for(int i=0; i<h.getHand().size(); i++) {
             sb.append(h.getHand().get(i).cardType().name + " ");
         }
-        return sb.toString();
+        System.out.printf("A: %d, B: %d, C: %d, Hand: [%s].\n", ts.getActions(), ts.getBuys(), ts.getCoins(), sb.toString());
     }
 }
