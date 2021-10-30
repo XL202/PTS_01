@@ -19,9 +19,8 @@ public class Turn {
     }
     public boolean evaluate_card(CardInterface card) {
         int drawCount = card.evaluate(ts);
-        //System.out.printf("%d in\n", ts.getCoins());
-        LinkedList<CardInterface> tmp_cards = new LinkedList<>();
 
+        System.out.printf("%d add actions\n", card.cardType().plusActions);
         hand.drawCards(deck.draw(drawCount));
         return false;
 
@@ -30,7 +29,7 @@ public class Turn {
         AtLeastNEmptyDecks a = new AtLeastNEmptyDecks(c, bd);
         if (a.isGameOver()) return false;
         turnNumber++;
-
+        //ts = new TurnStatus();
         return true;
     }
 

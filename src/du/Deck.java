@@ -3,9 +3,10 @@ package du;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
+import java.util.Optional;
 
 public class Deck {
-    LinkedList<CardInterface> deck;
+    LinkedList<CardInterface> deck = new LinkedList<>();
     DiscardPile dp;
     public Deck(LinkedList<CardInterface> deck, DiscardPile dp) {
         this.dp = dp;
@@ -22,6 +23,15 @@ public class Deck {
         }
 
     }
+    public int getDeckSize() {
+        return deck.size();
+    }
+
+    public Optional<CardInterface> getTopDeckCard() {
+        if (deck.isEmpty()) return Optional.empty();
+        return Optional.of(deck.get(deck.size()-1));
+    }
+
     public LinkedList<CardInterface> draw(int count) {
         int rest_count = 0;
         if (deck.size() < count) {

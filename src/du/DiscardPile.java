@@ -3,10 +3,10 @@ package du;
 import java.util.*;
 
 public class DiscardPile {
-    LinkedList<CardInterface> cards;
+    LinkedList<CardInterface> cards = new LinkedList<>();
 
     public DiscardPile(LinkedList<CardInterface> cards) {
-        this.cards = cards;
+        for(int i=0; i<cards.size(); i++) this.cards.add(cards.get(i));
     }
         
     public Optional<CardInterface> getTopCard() {

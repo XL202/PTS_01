@@ -67,7 +67,7 @@ public class Game {
         }
         if (ts.getActions() > 0) {
             if (h.cards.size() > handIdx && handIdx > -1) {
-                if (h.getHand().get(handIdx).cardType().isAction) t.evaluate_card(h.play(handIdx));
+                if (h.isActionCard(handIdx)) t.evaluate_card(h.play(handIdx));
                 else {
                     System.err.println("Zvolená karta nie je ActionCard!");
                     return false;
@@ -103,19 +103,7 @@ public class Game {
             System.out.printf("============\nTurn %s, buy phase\n------------\n", t.getTurnNumber());
             actionPhase = false;
             buyPhase = true;
-            int tmp = h.getHand().size();
-            int tmp_c = 0;
-            for(int i=0; i<tmp; i++) {
 
-                if (h.getHand().get(i).cardType() == GameCardType.GAME_CARD_TYPE_COPPER) {
-                    ts.setCoins(ts.getCoins() + 1);
-                    p.addCardToPlay(h.getHand().remove(i));
-                    i--;
-                    tmp--;
-                    tmp_c++;
-                }
-            }
-            if (tmp_c != 0) System.out.printf("%d kariet COPPER bolo premenených na coins (+%d Coins)\n", tmp_c, tmp_c);
         }
 
         return false;
@@ -161,15 +149,18 @@ public class Game {
     }
     private void is_Action_phase_possible() {
         boolean tmp = true;
+        playTreasureCards();
         for(int i=0; i<h.getHand().size(); i++) {
             if (h.getHand().get(i).cardType().isAction) return;
             else tmp = false;
         }
+
         if (!tmp) {
             System.out.println("***V Hand nie sú žiadne action cards!***");
 
             endPlayCardPhase();
         }
+
 
     }
     public boolean buyCards(int idBuyDeck) {
@@ -258,5 +249,20 @@ public class Game {
             sb.append(h.getHand().get(i).cardType().name + " ");
         }
         System.out.printf("A: %d, B: %d, C: %d, Hand: [%s].\n", ts.getActions(), ts.getBuys(), ts.getCoins(), sb.toString());
+    }
+    public void playTreasureCards() {
+        int tmp = h.getHand().size();
+        int tmp_c = 0;
+        for(int i=0; i<tmp; i++) {
+
+            if (h.getHand().get(i).cardType() == GameCardType.GAME_CARD_TYPE_COPPER) {
+                ts.setCoins(ts.getCoins() + 1);
+                p.addCardToPlay(h.getHand().remove(i));
+                i--;
+                tmp--;
+                tmp_c++;
+            }
+        }
+        if (tmp_c != 0) System.out.printf("%d kariet COPPER bolo premenených na coins (+%d Coins)\n", tmp_c, tmp_c);
     }
 }
